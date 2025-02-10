@@ -1,26 +1,22 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import HomePage from "./components/homepage.jsx";
-import Dashboard from "./components/dashboard.jsx";
-import Barchart from "./components/barchart.jsx";
-import clientData from "./client.js";
+import HomePage from "./Pages/homepage.jsx";
+import Account from "./Pages/account.jsx";
+import Dashboard from "./Pages/dashboard.jsx";
+import Analysis from "./Pages/analysis.jsx";
+import LoginPage from "./Pages/loginpage.jsx";
+import SignupPage from "./Pages/signupPage.jsx";
 
 const App = () => {
   return (
     <Router>
-      <div className="container">
-        {clientData?.map((user) => (
-          <div key={user.id} className="product">
-            <Dashboard data={user.dashboard} />
-            <HomePage data={user.homepage} />
-            <Barchart data={user.barchart} />
-          </div>
-        ))}
-      </div>
-
       <Routes>
         <Route path="/" element={<HomePage />} />
+        <Route path="/account" element={<Account />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/analysis" element={<Analysis />} />
+        <Route path="/loginpage" element={<LoginPage />} />
+        <Route path="/signupPage" element={<SignupPage />} />
       </Routes>
     </Router>
   );

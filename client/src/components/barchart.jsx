@@ -2,54 +2,67 @@ import React from "react";
 import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
-  BarElement,
   CategoryScale,
   LinearScale,
+  BarElement,
   Title,
   Tooltip,
   Legend,
 } from "chart.js";
 
+// Register chart.js components
 ChartJS.register(
-  BarElement,
   CategoryScale,
   LinearScale,
+  BarElement,
   Title,
   Tooltip,
   Legend
 );
 
-const BarChart = ({ data }) => {
-  const Data = {
-    labels: [
-      "January",
-      "February",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "August",
-      "September",
-      "October",
-      "November",
-      "December",
-    ],
+const BarChart = () => {
+  const data = {
+    labels: ["Income", "Rent", "Food", "Transport", "Entertainment"],
     datasets: [
       {
-        label: "Sales",
-        data: [300, 500, 100, 400, 600],
-        backgroundColor: "rgba(54, 162, 235, 0.5)",
-        borderColor: "rgba(54, 162, 235, 1)",
+        label: "Amount ($)",
+        data: [5000, 1500, 800, 400, 500], // Example data
+        backgroundColor: [
+          "#4CAF50",
+          "#FF5733",
+          "#FFC300",
+          "#3498DB",
+          "#8E44AD",
+        ],
+        borderColor: "#ddd",
         borderWidth: 1,
       },
     ],
   };
 
+  const options = {
+    responsive: true,
+    plugins: {
+      legend: {
+        display: true,
+        position: "top",
+      },
+      title: {
+        display: true,
+        text: "Budget Overview",
+        font: { size: 18 },
+      },
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+      },
+    },
+  };
+
   return (
-    <div>
-      <Bar data={chartData} />;<h2>Bar Chart</h2>
-      <p>Values: {data.values.join(", ")}</p>
+    <div style={{ width: "80%", margin: "auto" }}>
+      <Bar data={data} options={options} />
     </div>
   );
 };
