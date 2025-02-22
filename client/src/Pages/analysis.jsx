@@ -72,7 +72,7 @@ const Analysis = () => {
   return (
     <div className="analysis">
       <Navbar />
-      <h2>Transaction Analysis</h2>
+      <h2 className="font-bold text-2xl  mt-5">Transaction Analysis</h2>
 
       {/* Filter Buttons */}
       <div>
@@ -80,15 +80,7 @@ const Analysis = () => {
           <button
             key={range}
             onClick={() => filterTransactions(range)}
-            style={{
-              margin: "5px",
-              padding: "10px",
-              background: filter === range ? "#4CAF50" : "#ccc",
-              color: "#fff",
-              border: "none",
-              borderRadius: "5px",
-              cursor: "pointer",
-            }}
+            className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded mr-5"
           >
             {range.toUpperCase()}
           </button>
@@ -96,17 +88,12 @@ const Analysis = () => {
       </div>
 
       {/* Transaction Table */}
-      <table
-        border="1"
-        cellPadding="10"
-        cellSpacing="0"
-        style={{ marginTop: "20px" }}
-      >
+      <table className="table-auto mt-8 w-full border-collapse border border-gray-300 mb-7">
         <thead>
-          <tr>
-            <th>Date</th>
-            <th>Category</th>
-            <th>Amount (Ksh)</th>
+          <tr className="bg-gray-500 border border-gray-300">
+            <th className="px-4 py-2 border">Date</th>
+            <th className="px-4 py-2 border">Category</th>
+            <th className="px-4 py-2 border">Amount (Ksh)</th>
           </tr>
         </thead>
         <tbody>
@@ -119,8 +106,10 @@ const Analysis = () => {
               </tr>
             ))
           ) : (
-            <tr>
-              <td colSpan="3">No transactions found for this period.</td>
+            <tr className="border">
+              <td colSpan="3" className="px-4 py-2 text-center">
+                No transactions found for this period.
+              </td>
             </tr>
           )}
         </tbody>

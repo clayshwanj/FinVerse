@@ -44,8 +44,6 @@ const BudgetCategories = ({ onComplete }) => {
 
   return (
     <div>
-      <h2>Setup Budget</h2>
-
       {/* Step 1: Select Category */}
       {step === 1 && (
         <>
@@ -54,7 +52,7 @@ const BudgetCategories = ({ onComplete }) => {
             <button
               key={category}
               onClick={() => handleCategorySelect(category)}
-              style={{ margin: "5px", padding: "10px" }}
+              className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded mr-5"
             >
               {category}
             </button>
@@ -74,7 +72,12 @@ const BudgetCategories = ({ onComplete }) => {
               onChange={(e) => setBudgetAmount(e.target.value)}
               required
             />
-            <button type="submit">Next</button>
+            <button
+              type="submit"
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
+            >
+              Next
+            </button>
           </form>
         </>
       )}
@@ -87,7 +90,7 @@ const BudgetCategories = ({ onComplete }) => {
             <button
               key={period}
               onClick={() => handleBudgetPeriodSelect(period)}
-              style={{ margin: "5px", padding: "10px" }}
+              className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded"
             >
               {period}
             </button>

@@ -1,5 +1,14 @@
+@import "tailwindcss";
 body {
-  background-color: rgb(69, 113, 210);
+  background-color: rgb(248, 239, 229);
   color: black;
 }
-/* @import "tailwindcss"; */
+
+@layer components {
+  .input-box {
+    @apply w-full text-sm bg-transparent border-[1.5px] px-5 py-3 mb-4 outline-none;
+  }
+  .btn-primary {
+    @apply w-full text-sm bg-blue-500 text-white p-2 rounded my-1 hover:bg-blue-600;
+  }
+}

@@ -56,8 +56,6 @@ const Transaction = () => {
 
   return (
     <div>
-      <h2>Transactions</h2>
-
       {/* Transaction List */}
       {transactions.length > 0 ? (
         <table border="1" cellPadding="10" cellSpacing="0">
@@ -85,7 +83,7 @@ const Transaction = () => {
       {/* Add Transaction Button */}
       <button
         onClick={() => setShowForm(true)}
-        style={{ marginTop: "10px", padding: "10px" }}
+        className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded"
       >
         Add Transaction
       </button>
@@ -103,7 +101,7 @@ const Transaction = () => {
           <form onSubmit={handleSubmit}>
             <input
               type="number"
-              placeholder="Amount ($)"
+              placeholder="Amount Ksh"
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
               required
@@ -122,7 +120,12 @@ const Transaction = () => {
               onChange={(e) => setPhone(e.target.value)}
               required
             />
-            <button type="submit">Complete Transaction</button>
+            <button
+              type="submit"
+              className="bg-blue-600  hover:bg-green-500 text-white font-bold py-2 px-4 border-b-4 border-blue-500 hover:border-green-700  rounded"
+            >
+              Complete Transaction
+            </button>
           </form>
         </div>
       )}
