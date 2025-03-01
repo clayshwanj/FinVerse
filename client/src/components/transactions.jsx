@@ -63,7 +63,7 @@ const Transaction = () => {
             <tr>
               <th>Date</th>
               <th>Category</th>
-              <th>Amount ($)</th>
+              <th>Amount (Ksh)</th>
             </tr>
           </thead>
           <tbody>
@@ -101,10 +101,11 @@ const Transaction = () => {
           <form onSubmit={handleSubmit}>
             <input
               type="number"
-              placeholder="Amount Ksh"
+              placeholder="Amount (Ksh)"
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
               required
+              className="w-40 mr-4"
             />
             <input
               type="text"
@@ -112,6 +113,7 @@ const Transaction = () => {
               value={category}
               onChange={(e) => setCategory(e.target.value)}
               required
+              className="mr-5"
             />
             <input
               type="tel"
@@ -119,6 +121,7 @@ const Transaction = () => {
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               required
+              className="mr-5"
             />
             <button
               type="submit"

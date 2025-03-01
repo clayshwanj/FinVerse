@@ -11,7 +11,7 @@ const PieChart = () => {
     datasets: [
       {
         label: "Amount (ksh)",
-        data: [5000, 1500, 800, 400, 500], // Example data
+        data: [5000, 1500, 800, 400, 500],
         backgroundColor: [
           "#4CAF50",
           "#FF5733",

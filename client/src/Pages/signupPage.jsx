@@ -1,30 +1,41 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
-// import { FaRegEye, FaRegEyeSlash } from "react-icons";
+import { Link, useNavigate } from "react-router-dom";
+import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import axios from "axios";
 
 const SignupPage = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
   const handleSignup = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setErrorMessage(""); // Clear previous error
+
     try {
       await axios.post("/api/auth/signup", { name, email, password });
-      navigate("/dashboard"); // Redirect after successful signup
+      navigate("/account");
     } catch (error) {
-      console.error("Signup failed", error);
+      setErrorMessage("Signup failed. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="flex items items-center justify-center mt-28">
+    <div className="flex items-center justify-center mt-28">
       <div className="w-96 border rounded-2xl bg-white px-7 py-10">
         <h1 className="text-2xl font-bold">Sign Up</h1>
-        <form onSubmit={handleSignup}>
+
+        {/* Error Message */}
+        {errorMessage && <p className="text-red-500 text-sm">{errorMessage}</p>}
+
+        <form onSubmit={handleSignup} className="space-y-4">
           <input
             type="text"
             placeholder="Full Name"
@@ -40,50 +51,52 @@ const SignupPage = () => {
             onChange={(e) => setEmail(e.target.value)}
             required
             className="input-box"
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            className="input-box"
+            autoFocus
+            autoComplete="email"
           />
 
-          <button type="submit" className="btn-primary ">
-            Create Account
-          </button>
-          <p>
-            Already have an account?{""}
-            <Link
-              to="/loginpage"
-              className="font-medium text-blue-400 underline"
+          {/* Password Input with Show/Hide Toggle */}
+          <div className="relative">
+            <input
+              type={showPassword ? "text" : "password"} // Toggle input type
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              className="input-box pr-10"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)} // Toggle state
+              className="absolute inset-y-0 right-3 flex items-center text-gray-500"
             >
-              Login
-            </Link>
-          </p>
+              {showPassword ? (
+                <FaRegEyeSlash size={20} />
+              ) : (
+                <FaRegEye size={20} />
+              )}
+            </button>
+          </div>
+
+          {/* Signup Button with Loading State */}
+          <button
+            type="submit"
+            className="btn-primary w-full"
+            disabled={loading}
+          >
+            {loading ? "Creating Account..." : "Create Account"}
+          </button>
         </form>
+
+        <p>
+          Already have an account?{" "}
+          <Link to="/loginpage" className="font-medium text-blue-400 underline">
+            Login
+          </Link>
+        </p>
       </div>
     </div>
   );
 };
 
 export default SignupPage;
-
-{
-  /* {isShowPassword ? (
-            <FaRegEye
-              size={20}
-              className="text-blue-400 cursor-pointer"
-              onClick
-              {...() => toggleShowPassword()}
-            />
-          ) : (
-            <FaRegEyeSlash
-              size={20}
-              className="text-slate-400 cursor-pointer"
-              onClick
-              {...() => toggleShowPassword()}
-            />
-          )} */
-}

@@ -67,10 +67,11 @@ const BudgetCategories = ({ onComplete }) => {
           <form onSubmit={handleBudgetAmountSubmit}>
             <input
               type="number"
-              placeholder="Enter Budget Amount ($)"
+              placeholder="Enter Budget Amount (Ksh)"
               value={budgetAmount}
               onChange={(e) => setBudgetAmount(e.target.value)}
               required
+              className="w-55 mr-5"
             />
             <button
               type="submit"
@@ -90,7 +91,7 @@ const BudgetCategories = ({ onComplete }) => {
             <button
               key={period}
               onClick={() => handleBudgetPeriodSelect(period)}
-              className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded"
+              className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded mr-10"
             >
               {period}
             </button>
@@ -111,7 +112,12 @@ const BudgetCategories = ({ onComplete }) => {
           <p>
             <strong>Period:</strong> {budgetPeriod}
           </p>
-          <button onClick={handleConfirm}>Confirm</button>
+          <button
+            onClick={handleConfirm}
+            className="bg-blue-600  hover:bg-green-500 text-white font-bold py-2 px-4 border-b-4 border-blue-500 hover:border-green-700  rounded"
+          >
+            Confirm
+          </button>
         </>
       )}
     </div>

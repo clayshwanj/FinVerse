@@ -1,11 +1,31 @@
-import mongoose from "mongoose";
+import Budget from "../models/budget.js";
 
-const budgetSchema = new mongoose.Schema({
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-  category: { type: String, required: true },
-  amount: { type: Number, required: true },
-  type: { type: String, enum: ["income", "expense"], required: true },
-  date: { type: Date, default: Date.now },
-});
+export const addBudget = async (req, res) => {
+  if (!req.session.user)
+    return res.status(401).json({ message: "Unauthorized" });
+  try {
+    const { category, amount } = req.body;
+    const newBudget = new Budget({
+      userId: req.session.user.id,
+      category,
+      amount,
+    });
+    await newBudget.save();
 
-export default mongoose.model("Budget", budgetSchema);
+    res.status(201).json(newBudget);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+export const getBudgets = async (req, res) => {
+  if (!req.session.user)
+    return res.status(401).json({ message: "Unauthorized" });
+
+  try {
+    const budgets = await Budget.find({ userId: req.user.id });
+    res.json(budgets);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
