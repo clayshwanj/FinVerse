@@ -1,4 +1,4 @@
-import User from "../database/models/user";
+import User from "../database/models/user.js";
 import bcrypt from "bcryptjs";
 
 //CREATE a new user

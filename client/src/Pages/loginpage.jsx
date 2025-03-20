@@ -17,12 +17,13 @@ const LoginPage = () => {
     setErrorMessage(""); // Clear previous error
 
     try {
-      await axios.post("/api/auth/login", { email, password });
+      await axios.post("/auth/login", { email, password });
       navigate("/account");
     } catch (error) {
       setErrorMessage("Invalid email or password. Please try again.");
     } finally {
       setLoading(false);
+      alert("Login failed!");
     }
   };
 

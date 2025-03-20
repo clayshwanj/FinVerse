@@ -1,10 +1,10 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
-import session from "express-session";
 import cookieParser from "cookie-parser";
-import userRoute from "./routes/userRoutes.js";
-import budgetRoute from "./routes/budgetRoute.js";
+import authRoutes from "./routes/authRoutes.js";
+import userRoutes from "./routes/userRoutes.js";
+import budgetRoutes from "./routes/budgetRoutes.js";
 import connectDB from "./database/db.js";
 
 dotenv.config();
@@ -16,22 +16,13 @@ app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 
-// Session Configuration
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false,
-    cookie: { secure: false, httpOnly: true }, // Set secure: true in production
-  })
-);
-
 // Connect Database
-connectDB();
+connectDB(process.env.MONGO_URI);
 
 // Routes
-app.use("/api/users", userRoute);
-app.use("/api/budget", budgetRoute);
+app.use("/auth", authRoutes);
+app.use("/user", userRoutes);
+app.use("/budget", budgetRoutes);
 
 app.get("/", (req, res) => {
   res.send("You have requested the home route with GET");

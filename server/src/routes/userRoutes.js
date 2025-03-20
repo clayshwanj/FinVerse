@@ -5,6 +5,7 @@ import {
   updateUser,
   deleteUser,
 } from "../controllers/userControl.js";
+import { authMiddleware } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
@@ -14,25 +15,8 @@ router.get("/users", getUsers); // Get all users
 router.put("/users/:id", updateUser); // Update user by ID
 router.delete("/users/:id", deleteUser); // Delete user by ID
 
+// Protected route
+router.get("/account", authMiddleware, (req, res) => {
+  res.json({ message: `Welcome, ${req.session.user.username}!` });
+});
 export default router;
-
-// import express from "express";
-// import { signUp } from "../controllers/userControl";
-
-// const router = express.Router();
-
-// // Register User
-// router.post("/signupPage", signUp);
-
-// // Login User
-// router.post("/login", async (req, res) => {
-//   const { email, password } = req.body;
-//   const user = await user.findOne({ email });
-//   if (user && user.password === password) {
-//     res.json(user);
-//   } else {
-//     res.status(401).json({ message: "Invalid credentials" });
-//   }
-// });
-
-// export default router;

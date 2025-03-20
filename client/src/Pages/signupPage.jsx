@@ -18,7 +18,11 @@ const SignupPage = () => {
     setErrorMessage(""); // Clear previous error
 
     try {
-      await axios.post("/api/auth/signup", { name, email, password });
+      const response = await api.post("/auth/signup", {
+        name,
+        email,
+        password,
+      });
       navigate("/account");
     } catch (error) {
       setErrorMessage("Signup failed. Please try again.");

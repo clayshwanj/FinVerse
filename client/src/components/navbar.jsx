@@ -1,9 +1,21 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { FaBars, FaTimes } from "react-icons/fa";
+import api from "../axiosapi";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+
+  const handleLogout = async () => {
+    try {
+      await api.post("/auth/logout");
+      alert("Logged out!");
+      navigate("/login");
+    } catch (error) {
+      console.error("Logout failed", error);
+      alert("Logout failed!");
+    }
+  };
 
   return (
     <nav className="bg-sky-700 w-full p-4">

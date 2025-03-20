@@ -6,13 +6,21 @@ import Dashboard from "./Pages/dashboard.jsx";
 import Analysis from "./Pages/analysis.jsx";
 import LoginPage from "./Pages/loginpage.jsx";
 import SignupPage from "./Pages/signupPage.jsx";
+import ProtectedRoute from "./components/protectedRoute.jsx";
 
 const App = () => {
   return (
     <Router>
       <Routes>
         <Route path="/" element={<HomePage />} />
-        <Route path="/account" element={<Account />} />
+        <Route
+          path="/account"
+          element={
+            <ProtectedRoute>
+              <Account />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/analysis" element={<Analysis />} />
         <Route path="/loginpage" element={<LoginPage />} />
