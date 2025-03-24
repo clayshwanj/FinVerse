@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import budgetRoutes from "./routes/budgetRoutes.js";
+import transactionRoutes from "./routes/transactionRoute.js";
 import connectDB from "./database/db.js";
 
 dotenv.config();
@@ -23,6 +24,7 @@ connectDB(process.env.MONGO_URI);
 app.use("/auth", authRoutes);
 app.use("/user", userRoutes);
 app.use("/budget", budgetRoutes);
+app.use("/transactions", transactionRoutes);
 
 app.get("/", (req, res) => {
   res.send("You have requested the home route with GET");

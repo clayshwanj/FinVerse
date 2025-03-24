@@ -7,6 +7,9 @@ import Analysis from "./Pages/analysis.jsx";
 import LoginPage from "./Pages/loginpage.jsx";
 import SignupPage from "./Pages/signupPage.jsx";
 import ProtectedRoute from "./components/protectedRoute.jsx";
+import VerifyPage from "./Pages/verifyEmail.jsx";
+import ForgotPasswordPage from "./Pages/forgotPassword.jsx";
+import ResetPasswordPage from "./Pages/resetPassword.jsx";
 
 const App = () => {
   return (
@@ -25,6 +28,9 @@ const App = () => {
         <Route path="/analysis" element={<Analysis />} />
         <Route path="/loginpage" element={<LoginPage />} />
         <Route path="/signupPage" element={<SignupPage />} />
+        <Route path="/auth/verify/:token" element={<VerifyPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
       </Routes>
     </Router>
   );

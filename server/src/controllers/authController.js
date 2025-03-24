@@ -8,7 +8,7 @@ dotenv.config();
 
 const JWT_SECRET = process.env.JWT_SECRET;
 const REFRESH_SECRET = process.env.REFRESH_SECRET;
-const JWT_VERIFICATION_SECRET = process.env.JWT_VERIFICATION_SECRET;
+const JWT_VERIFICATION_SECRET = process.env.JWT_SECRET;
 const BASE_URL = process.env.BASE_URL;
 const COOKIE_OPTIONS = {
   httpOnly: true,
@@ -29,10 +29,12 @@ const sendVerificationEmail = async (user, email) => {
   const token = jwt.sign({ id: user._id, email }, JWT_VERIFICATION_SECRET, {
     expiresIn: "1d",
   });
-  const verificationLink = `${BASE_URL}/verify/${token}`;
+  const verificationLink = `${BASE_URL}/auth/verify/${token}`;
+
+  console.log({ verificationLink });
 
   await transporter.sendMail({
-    from: `"Finverse" <${process.env.EMAIL_USER}>`,
+    from: `Finverse <${process.env.EMAIL_USER}>`,
     to: email,
     subject: "Verify your email - Finverse",
     html: `<h1>Welcome to Finverse!</h1>
@@ -59,11 +61,10 @@ export const signupUser = async (req, res) => {
     if (existingUser)
       return res.status(400).json({ message: "Email already registered" });
 
-    const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = new User({
       name,
       email,
-      password: hashedPassword,
+      password,
       isVerified: false,
     });
     await newUser.save();
@@ -74,6 +75,8 @@ export const signupUser = async (req, res) => {
       message: "User registered successfully! Please verify your email.",
     });
   } catch (error) {
+    console.log({ error });
+
     res.status(500).json({ message: "Error registering user" });
   }
 };
@@ -114,6 +117,7 @@ export const loginUser = async (req, res) => {
         .json({ message: "Please verify your email first." });
 
     const isMatch = await bcrypt.compare(password, user.password);
+
     if (!isMatch) return res.status(401).json({ message: "Invalid password" });
 
     const accessToken = generateAccessToken(user);
@@ -149,18 +153,4 @@ export const logoutUser = (req, res) => {
   res.clearCookie("token", COOKIE_OPTIONS);
   res.clearCookie("refreshToken", COOKIE_OPTIONS);
   res.json({ message: "Logged out successfully" });
-};
-
-// Middleware to protect routes
-export const protectRoute = (req, res, next) => {
-  const token = req.cookies.token;
-  if (!token) return res.status(401).json({ message: "Unauthorized" });
-
-  try {
-    const decoded = jwt.verify(token, JWT_SECRET);
-    req.user = decoded;
-    next();
-  } catch (error) {
-    res.status(401).json({ message: "Invalid token" });
-  }
 };

@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import Navbar from "../components/navbar.jsx";
 import { Link } from "react-router-dom";
 import { FaBars, FaTimes } from "react-icons/fa";
 import {
@@ -8,15 +7,16 @@ import {
   FaInstagram,
   FaLinkedinIn,
 } from "react-icons/fa";
+import ScrollToggleButton from "../components/scrollButton";
 
 const HomePage = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
     <div className="homepage">
-      <Navbar />
+      <ScrollToggleButton />
       {/* Navbar */}
-      <nav className="bg-sky-700 w-full p-4 flex justify-between items-center relative">
+      <nav className="bg-sky-700 w-full p-4 flex justify-between items-center fixed top-0 left-0 z-20 shadow-md">
         {/* Logo */}
         <div className="flex items-center space-x-2">
           <img src="/img/logoF.jpg" alt="Finverse logo" className="w-8 h-6" />
@@ -54,7 +54,7 @@ const HomePage = () => {
 
         {/* Mobile Menu (Shown when `isOpen` is true) */}
         {isOpen && (
-          <ul className="absolute top-16 left-0 w-full bg-sky-700 flex flex-col text-white items-center space-y-4 py-4 md:hidden">
+          <ul className="absolute top-16 left-0 w-full bg-sky-700 flex flex-col text-white items-center space-y-4 py-4 md:hidden z-10 shadow-lg">
             <li>
               <a href="#" onClick={() => setIsOpen(false)}>
                 Home

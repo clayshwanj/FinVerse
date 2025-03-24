@@ -14,16 +14,20 @@ const LoginPage = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setErrorMessage(""); // Clear previous error
+    setErrorMessage("");
 
     try {
-      await axios.post("/auth/login", { email, password });
+      const response = await axios.post("/api/auth/login", { email, password });
+
+      localStorage.setItem("token", response.data.token); // Store token
       navigate("/account");
     } catch (error) {
-      setErrorMessage("Invalid email or password. Please try again.");
+      console.error("Login error:", error);
+      setErrorMessage(
+        error.response?.data?.message || "Invalid email or password."
+      );
     } finally {
       setLoading(false);
-      alert("Login failed!");
     }
   };
 
@@ -59,7 +63,7 @@ const LoginPage = () => {
             />
             <button
               type="button"
-              onClick={() => setShowPassword(!showPassword)} // Toggle state
+              onClick={() => setShowPassword(!showPassword)}
               className="absolute inset-y-0 right-3 flex items-center text-gray-500"
             >
               {showPassword ? (

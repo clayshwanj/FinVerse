@@ -60,19 +60,51 @@ export const deleteUser = async (req, res) => {
   }
 };
 
-// export const signUp = async (req, res) => {
-//   const { name, email, password } = req.body;
-//   try {
-//     if ((!name, !email, !password)) {
-//       res.status(400).json({ message: "fill the name ,email , password" });
-//     }
-//     const user = await User.findOne({ email });
-//     if (user) {
-//       res.status(400).json({ message: "user exist" });
-//     }
-//     const newUser = await User.create();
-//     res.status(200).json(newUser);
-//   } catch (error) {
-//     res.status(500).json({ message: "server error" });
-//   }
-// };
+//Forgot password
+export const forgotPassword = async (req, res) => {
+  const { email } = req.body;
+  try {
+    const user = await User.findOne({ email });
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    const resetToken = jwt.sign({ id: user._id }, JWT_SECRET, {
+      expiresIn: "1h",
+    });
+
+    const resetLink = `${BASE_URL}/auth/reset-password/${resetToken}`;
+
+    await transporter.sendMail({
+      from: `Finverse <${process.env.EMAIL_USER}>`,
+      to: email,
+      subject: "Password Reset - Finverse",
+      html: `<p>Reset your password by clicking the link below:</p>
+             <a href="${resetLink}">Reset Password</a>`,
+    });
+
+    res.json({ message: "Reset link sent to your email" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error sending reset email" });
+  }
+};
+
+export const resetPassword = async (req, res) => {
+  const { token } = req.params;
+  const { password } = req.body;
+
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    const user = await User.findById(decoded.id);
+
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(password, salt);
+    await user.save();
+
+    res.json({ message: "Password reset successfully. You can now log in!" });
+  } catch (error) {
+    console.error(error);
+    res.status(400).json({ message: "Invalid or expired token" });
+  }
+};

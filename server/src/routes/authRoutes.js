@@ -3,10 +3,10 @@ import {
   signupUser,
   loginUser,
   logoutUser,
-  protectRoute,
   refreshToken,
   verifyEmail,
 } from "../controllers/authController.js";
+import { authMiddleware } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
@@ -17,8 +17,10 @@ router.get("/refresh", refreshToken);
 router.get("/verify/:token", verifyEmail);
 
 // Protect this route
-router.get("/dashboard", protectRoute, (req, res) => {
-  res.json({ message: "Welcome to your dashboard!" });
+router.get("/account", authMiddleware, (req, res) => {
+  console.log(req.user.id);
+
+  res.json({ message: "Welcome to you Finverse!" });
 });
 
 export default router;

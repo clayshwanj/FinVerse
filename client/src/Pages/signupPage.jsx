@@ -10,21 +10,25 @@ const SignupPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState(""); // For verification message
   const navigate = useNavigate();
 
   const handleSignup = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setErrorMessage(""); // Clear previous error
+    setErrorMessage("");
+    setSuccessMessage("");
 
     try {
-      const response = await api.post("/auth/signup", {
+      const response = await axios.post("/auth/signup", {
         name,
         email,
         password,
       });
-      navigate("/account");
+      setSuccessMessage(response.data.message); // Show success message
+      setTimeout(() => navigate("/loginpage"), 3000); // Redirect after 3s
     } catch (error) {
+      console.error("Signup error:", error);
       setErrorMessage("Signup failed. Please try again.");
     } finally {
       setLoading(false);
@@ -38,6 +42,11 @@ const SignupPage = () => {
 
         {/* Error Message */}
         {errorMessage && <p className="text-red-500 text-sm">{errorMessage}</p>}
+
+        {/* Success Message */}
+        {successMessage && (
+          <p className="text-green-500 text-sm">{successMessage}</p>
+        )}
 
         <form onSubmit={handleSignup} className="space-y-4">
           <input

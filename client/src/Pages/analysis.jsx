@@ -5,69 +5,63 @@ import PieChart from "../components/piechart";
 import BudgetSummary from "../components/budgetSum";
 
 const Analysis = () => {
-  const [transactions, setTransactions] = useState([]); // Ensure initial state is an array
-  const [filteredTransactions, setFilteredTransactions] = useState([]); // Filtered transactions
+  const [transactions, setTransactions] = useState([]);
+  const [filteredTransactions, setFilteredTransactions] = useState([]);
   const [filter, setFilter] = useState("month"); // Default filter
+  const [summaryData, setSummaryData] = useState({}); // Holds budget summary data
 
-  // Fetch Transactions from Backend
-  useEffect(() => {
-    const fetchTransactions = async () => {
-      try {
-        const response = await axios.get("/api/transactions");
-        console.log("Fetched Transactions:", response.data); // Debugging log
+  // Fetch Transactions and Summary from Backend
+  const fetchData = async (range) => {
+    try {
+      const now = new Date();
+      let startDate,
+        endDate = new Date();
 
-        // Ensure response.data is an array, fallback to empty array if not
-        setTransactions(Array.isArray(response.data) ? response.data : []);
-      } catch (error) {
-        console.error("Error fetching transactions:", error);
-        setTransactions([]); // Prevents .filter error
+      switch (range) {
+        case "today":
+          startDate = new Date(now.setHours(0, 0, 0, 0));
+          break;
+        case "week":
+          startDate = new Date();
+          startDate.setDate(now.getDate() - 7);
+          break;
+        case "month":
+          startDate = new Date();
+          startDate.setMonth(now.getMonth() - 1);
+          break;
+        case "year":
+          startDate = new Date();
+          startDate.setFullYear(now.getFullYear() - 1);
+          break;
+        default:
+          startDate = null;
       }
-    };
 
-    fetchTransactions();
-  }, []);
+      const queryParams = startDate
+        ? `?startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}`
+        : "";
 
-  // Function to filter transactions
-  const filterTransactions = (range) => {
-    if (!Array.isArray(transactions)) return; // Ensure transactions is an array
+      const transactionResponse = await axios.get(
+        `/api/transactions${queryParams}`
+      );
+      const summaryResponse = await axios.get(`/api/summary${queryParams}`);
 
-    const now = new Date();
-    let startDate;
+      console.log("Fetched Transactions:", transactionResponse.data);
+      console.log("Fetched Summary:", summaryResponse.data);
 
-    switch (range) {
-      case "today":
-        startDate = new Date(now.setHours(0, 0, 0, 0)); // Start of today
-        break;
-      case "week":
-        startDate = new Date();
-        startDate.setDate(now.getDate() - 7); // Last 7 days
-        break;
-      case "month":
-        startDate = new Date();
-        startDate.setMonth(now.getMonth() - 1); // Last month
-        break;
-      case "year":
-        startDate = new Date();
-        startDate.setFullYear(now.getFullYear() - 1); // Last year
-        break;
-      default:
-        startDate = null;
+      setTransactions(transactionResponse.data);
+      setSummaryData(summaryResponse.data);
+      setFilter(range);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      setTransactions([]);
+      setSummaryData({});
     }
-
-    // Filter transactions based on date
-    const filtered = transactions.filter((tx) => {
-      const transactionDate = new Date(tx.date);
-      return startDate ? transactionDate >= startDate : true;
-    });
-
-    setFilteredTransactions(filtered);
-    setFilter(range);
   };
 
-  // Ensure transactions array is always available
   useEffect(() => {
-    filterTransactions(filter); // Apply default filter on first render
-  }, [transactions]); // Runs when transactions change
+    fetchData(filter); // Load default filter data
+  }, []);
 
   return (
     <div className="analysis">
@@ -79,8 +73,10 @@ const Analysis = () => {
         {["today", "week", "month", "year"].map((range) => (
           <button
             key={range}
-            onClick={() => filterTransactions(range)}
-            className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded mr-5"
+            onClick={() => fetchData(range)}
+            className={`bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded mr-5 ${
+              filter === range ? "bg-blue-700" : ""
+            }`}
           >
             {range.toUpperCase()}
           </button>
@@ -97,12 +93,12 @@ const Analysis = () => {
           </tr>
         </thead>
         <tbody>
-          {filteredTransactions.length > 0 ? (
-            filteredTransactions.map((tx, index) => (
+          {transactions.length > 0 ? (
+            transactions.map((tx, index) => (
               <tr key={index}>
                 <td>{new Date(tx.date).toLocaleDateString()}</td>
                 <td>{tx.category}</td>
-                <td>${tx.amount}</td>
+                <td>Ksh{tx.amount}</td>
               </tr>
             ))
           ) : (
@@ -115,8 +111,8 @@ const Analysis = () => {
         </tbody>
       </table>
 
-      <PieChart transactions={filteredTransactions} />
-      <BudgetSummary transactions={filteredTransactions} />
+      <PieChart transactions={transactions} summaryData={summaryData} />
+      <BudgetSummary transactions={transactions} summaryData={summaryData} />
     </div>
   );
 };

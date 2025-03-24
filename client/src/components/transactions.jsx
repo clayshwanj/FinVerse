@@ -6,54 +6,78 @@ const Transaction = () => {
   const [showForm, setShowForm] = useState(false);
   const [amount, setAmount] = useState("");
   const [category, setCategory] = useState("");
-  const [phone, setPhone] = useState("");
+  const token = localStorage.getItem("token");
 
   // Fetch Transactions from Backend
   useEffect(() => {
     const fetchTransactions = async () => {
       try {
-        const response = await axios.get("/api/transactions");
-        console.log("Fetched transactions:", response.data); // Debugging
+        const response = await axios.get("/api/transactions", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
 
-        // Ensure response.data is an array
         if (Array.isArray(response.data)) {
           setTransactions(response.data);
         } else {
           console.error("Unexpected response format:", response.data);
-          setTransactions([]); // Fallback to empty array
+          setTransactions([]);
         }
       } catch (error) {
         console.error("Error fetching transactions:", error);
-        setTransactions([]); // Fallback to empty array on error
+        setTransactions([]);
+      }
+    };
+
+    const fetchSummary = async () => {
+      try {
+        const response = await axios.get("/api/transactions/summary", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setSummary(response.data);
+      } catch (error) {
+        console.error("Error fetching summary:");
       }
     };
 
     fetchTransactions();
-  }, []);
+    fetchSummary();
+  }, [token]);
 
   // Handle Submit New Transaction
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const newTransaction = {
-      amount,
-      category,
-      phone,
-      date: new Date().toISOString(),
-    };
+    const newTransaction = { category, amount };
 
     try {
-      const response = await axios.post("/api/transactions", newTransaction);
+      const response = await axios.post(
+        "/api/transactions/add",
+        newTransaction,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
       setTransactions((prev) => [...prev, response.data]); // Update UI
       setShowForm(false);
       setAmount("");
       setCategory("");
-      setPhone("");
     } catch (error) {
-      console.error("Error adding transaction:", error);
+      console.error("Error adding transaction:");
     }
   };
 
+  // Handle Delete Transaction
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`/api/transactions/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setTransactions(transactions.filter((tx) => tx._id !== id));
+    } catch (error) {
+      console.error("Error deleting transaction:");
+    }
+  };
   return (
     <div>
       {/* Transaction List */}

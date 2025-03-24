@@ -1,24 +1,31 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import api from "../api/axiosapi";
+import { useParams, useNavigate } from "react-router-dom";
+import axios from "axios";
 
-const VerifyEmail = () => {
+const VerifyPage = () => {
   const { token } = useParams();
   const [message, setMessage] = useState("Verifying...");
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const verify = async () => {
+    const verifyEmail = async () => {
       try {
-        const res = await api.get(`/auth/verify/${token}`);
-        setMessage(res.data.message);
+        const response = await axios.get(`/auth/verify/${token}`);
+        setMessage(response.data.message);
+        setTimeout(() => navigate("/loginpage"), 3000);
       } catch (error) {
-        setMessage("Verification failed. Link may be invalid or expired.");
+        setMessage("Invalid or expired token.");
       }
     };
-    verify();
-  }, [token]);
 
-  return <div>{message}</div>;
+    verifyEmail();
+  }, [token, navigate]);
+
+  return (
+    <div className="flex justify-center items-center h-screen">
+      <h2 className="text-lg font-bold">{message}</h2>
+    </div>
+  );
 };
 
-export default VerifyEmail;
+export default VerifyPage;

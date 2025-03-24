@@ -1,17 +1,47 @@
 import React, { useState } from "react";
+import axios from "axios";
 
 const BudgetCategories = ({ onComplete }) => {
   const [step, setStep] = useState(1);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [budgetAmount, setBudgetAmount] = useState("");
   const [budgetPeriod, setBudgetPeriod] = useState("");
-
-  const categories = ["Food", "Rent", "Entertainment", "+"];
+  const [newCategory, setNewCategory] = useState("");
+  const [categories, setCategories] = useState([
+    "Food",
+    "Rent",
+    "Entertainment",
+    "+",
+  ]);
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   // Handle Category Selection
   const handleCategorySelect = (category) => {
-    setSelectedCategory(category);
-    setStep(2);
+    if (category === "+") {
+      setStep("newCategory"); // Go to add new category step
+    } else {
+      setSelectedCategory(category);
+      setStep(2);
+    }
+  };
+
+  // Handle New Category Submission
+  const handleNewCategorySubmit = async (e) => {
+    e.preventDefault();
+    if (newCategory.trim()) {
+      try {
+        const response = await axios.post("/api/budget/add-category", {
+          category: newCategory,
+        });
+        setCategories([...categories.slice(0, -1), newCategory, "+"]);
+        setSelectedCategory(newCategory);
+        setStep(2);
+      } catch (error) {
+        console.error("Failed to add category", error);
+      }
+    }
   };
 
   // Handle Budget Amount Submission
@@ -29,16 +59,29 @@ const BudgetCategories = ({ onComplete }) => {
   };
 
   // Handle Final Confirmation
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     const budgetData = {
       category: selectedCategory,
       amount: budgetAmount,
       period: budgetPeriod,
     };
 
-    console.log("Budget Set:", budgetData);
-    if (onComplete) {
-      onComplete(budgetData);
+    try {
+      setLoading(true);
+      setErrorMessage("");
+      const response = await axios.post("/api/budget/add", budgetData, {
+        withCredentials: true,
+      });
+
+      console.log("Budget saved:", response.data);
+      setSuccessMessage("Budget saved successfully!");
+
+      if (onComplete) onComplete(response.data);
+    } catch (error) {
+      console.error("Failed to save budget:", error);
+      setErrorMessage("Failed to save budget. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -57,6 +100,35 @@ const BudgetCategories = ({ onComplete }) => {
               {category}
             </button>
           ))}
+        </>
+      )}
+
+      {/* New Category Step */}
+      {step === 1.5 && (
+        <>
+          <h3>Add a New Category</h3>
+          <form onSubmit={handleNewCategorySubmit}>
+            <input
+              type="text"
+              placeholder="Enter New Category"
+              value={newCategory}
+              onChange={(e) => setNewCategory(e.target.value)}
+              required
+              className="w-55 mr-5"
+            />
+            <button
+              type="submit"
+              className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-full"
+            >
+              Add Category
+            </button>
+          </form>
+          <button
+            onClick={() => setStep(1)}
+            className="mt-2 text-red-500 underline"
+          >
+            Cancel
+          </button>
         </>
       )}
 
@@ -107,17 +179,27 @@ const BudgetCategories = ({ onComplete }) => {
             <strong>Category:</strong> {selectedCategory}
           </p>
           <p>
-            <strong>Amount:</strong> ${budgetAmount}
+            <strong>Amount:</strong> Ksh{budgetAmount}
           </p>
           <p>
             <strong>Period:</strong> {budgetPeriod}
           </p>
           <button
             onClick={handleConfirm}
-            className="bg-blue-600  hover:bg-green-500 text-white font-bold py-2 px-4 border-b-4 border-blue-500 hover:border-green-700  rounded"
+            disabled={loading}
+            className={`${
+              loading
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-blue-600 hover:bg-green-500"
+            } text-white font-bold py-2 px-4 border-b-4 border-blue-500 hover:border-green-700 rounded`}
           >
-            Confirm
+            {loading ? "Saving..." : "Confirm"}
           </button>
+
+          {errorMessage && <p className="text-red-500 mt-2">{errorMessage}</p>}
+          {successMessage && (
+            <p className="text-green-500 mt-2">{successMessage}</p>
+          )}
         </>
       )}
     </div>
