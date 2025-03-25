@@ -12,10 +12,10 @@ import { authMiddleware } from "../middleware/authMiddleware.js";
 const router = express.Router();
 
 // API Routes
-router.post("/users", createUser); // Create a user
-router.get("/users", getUsers); // Get all users
-router.put("/users/:id", updateUser); // Update user by ID
-router.delete("/users/:id", deleteUser); // Delete user by ID
+router.post("/users", createUser);
+router.get("/users", getUsers);
+router.put("/users/:id", updateUser);
+router.delete("/users/:id", deleteUser);
 router.post("/forgot-password", forgotPassword);
 router.post("/reset-password/:token", resetPassword);
 

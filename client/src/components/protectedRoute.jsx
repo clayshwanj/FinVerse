@@ -3,12 +3,14 @@ import { Navigate } from "react-router-dom";
 import api from "../axiosapi";
 
 const ProtectedRoute = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = React.useState(false);
+  const [isAuthenticated, setIsAuthenticated] = React.useState(null);
 
   React.useEffect(() => {
     const verifyAuth = async () => {
       try {
-        const res = await api.get("/auth/dashboard"); // Backend route secured with protectRoute middleware
+        const res = await api.get("auth/account"); // Backend route secured with protectRoute middleware
+        console.log({ res });
+
         if (res.status === 200) setIsAuthenticated(true);
       } catch (error) {
         setIsAuthenticated(false);
@@ -19,7 +21,7 @@ const ProtectedRoute = ({ children }) => {
 
   if (isAuthenticated === null) return <div>Loading...</div>;
 
-  return isAuthenticated ? children : <Navigate to="/login" />;
+  return isAuthenticated ? children : <Navigate to="/loginpage" />;
 };
 
 export default ProtectedRoute;

@@ -21,9 +21,12 @@ const ResetPasswordPage = () => {
 
     try {
       setLoading(true);
-      const response = await axios.post(`/api/auth/reset-password/${token}`, {
-        password: newPassword,
-      });
+      const response = await axios.post(
+        `http://localhost:3005/auth/reset-password/${token}`,
+        {
+          password: newPassword,
+        }
+      );
 
       setMessage(response.data.message);
       setTimeout(() => navigate("/loginpage"), 2000);

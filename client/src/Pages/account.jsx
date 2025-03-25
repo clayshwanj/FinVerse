@@ -1,11 +1,11 @@
 import React from "react";
 import Navbar from "../components/navbar";
-import ProfileCard from "../components/profilecard";
+import UserProfile from "../components/profilecard";
 const Account = () => {
   return (
     <div>
       <Navbar />
-      <ProfileCard />
+      <UserProfile />
     </div>
   );
 };

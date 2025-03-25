@@ -32,7 +32,7 @@ const BudgetCategories = ({ onComplete }) => {
     e.preventDefault();
     if (newCategory.trim()) {
       try {
-        const response = await axios.post("/api/budget/add-category", {
+        const response = await axios.post("/budget/add", {
           category: newCategory,
         });
         setCategories([...categories.slice(0, -1), newCategory, "+"]);
@@ -69,7 +69,7 @@ const BudgetCategories = ({ onComplete }) => {
     try {
       setLoading(true);
       setErrorMessage("");
-      const response = await axios.post("/api/budget/add", budgetData, {
+      const response = await axios.post("/budget/add", budgetData, {
         withCredentials: true,
       });
 

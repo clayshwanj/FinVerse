@@ -10,7 +10,7 @@ const SignupPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState(""); // For verification message
+  const [successMessage, setSuccessMessage] = useState("");
   const navigate = useNavigate();
 
   const handleSignup = async (e) => {
@@ -20,13 +20,13 @@ const SignupPage = () => {
     setSuccessMessage("");
 
     try {
-      const response = await axios.post("/auth/signup", {
+      const response = await axios.post("http://localhost:3005/auth/signup", {
         name,
         email,
         password,
       });
-      setSuccessMessage(response.data.message); // Show success message
-      setTimeout(() => navigate("/loginpage"), 3000); // Redirect after 3s
+      setSuccessMessage(response.data.message);
+      setTimeout(() => navigate("/loginpage"), 2000);
     } catch (error) {
       console.error("Signup error:", error);
       setErrorMessage("Signup failed. Please try again.");
@@ -71,7 +71,7 @@ const SignupPage = () => {
           {/* Password Input with Show/Hide Toggle */}
           <div className="relative">
             <input
-              type={showPassword ? "text" : "password"} // Toggle input type
+              type={showPassword ? "text" : "password"}
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}

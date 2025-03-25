@@ -12,7 +12,7 @@ const BudgetSummary = () => {
   useEffect(() => {
     const fetchSummary = async () => {
       try {
-        const response = await axios.get("/api/budget/summary");
+        const response = await axios.get("/budget/summary");
         const data = response.data;
 
         setTotalIncome(data.totalIncome);

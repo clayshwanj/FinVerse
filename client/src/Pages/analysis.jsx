@@ -42,9 +42,11 @@ const Analysis = () => {
         : "";
 
       const transactionResponse = await axios.get(
-        `/api/transactions${queryParams}`
+        `http://localhost:3005/transactions${queryParams}`
       );
-      const summaryResponse = await axios.get(`/api/summary${queryParams}`);
+      const summaryResponse = await axios.get(
+        `http://localhost:3005/summary${queryParams}`
+      );
 
       console.log("Fetched Transactions:", transactionResponse.data);
       console.log("Fetched Summary:", summaryResponse.data);

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../axiosapi";
 
 const Transaction = () => {
   const [transactions, setTransactions] = useState([]); // Ensure transactions is an array
@@ -12,7 +12,7 @@ const Transaction = () => {
   useEffect(() => {
     const fetchTransactions = async () => {
       try {
-        const response = await axios.get("/api/transactions", {
+        const response = await api.get("transactions", {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -30,7 +30,7 @@ const Transaction = () => {
 
     const fetchSummary = async () => {
       try {
-        const response = await axios.get("/api/transactions/summary", {
+        const response = await api.get("transactions/summary", {
           headers: { Authorization: `Bearer ${token}` },
         });
         setSummary(response.data);
@@ -50,13 +50,9 @@ const Transaction = () => {
     const newTransaction = { category, amount };
 
     try {
-      const response = await axios.post(
-        "/api/transactions/add",
-        newTransaction,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      const response = await api.post("transactions/add", newTransaction, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
       setTransactions((prev) => [...prev, response.data]); // Update UI
       setShowForm(false);
@@ -70,7 +66,7 @@ const Transaction = () => {
   // Handle Delete Transaction
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`/api/transactions/${id}`, {
+      await api.delete(`transactions/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setTransactions(transactions.filter((tx) => tx._id !== id));
@@ -139,14 +135,7 @@ const Transaction = () => {
               required
               className="mr-5"
             />
-            <input
-              type="tel"
-              placeholder="Phone Number"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              required
-              className="mr-5"
-            />
+
             <button
               type="submit"
               className="bg-blue-600  hover:bg-green-500 text-white font-bold py-2 px-4 border-b-4 border-blue-500 hover:border-green-700  rounded"

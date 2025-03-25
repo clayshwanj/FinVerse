@@ -2,13 +2,14 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa"; // Import icons
 import axios from "axios";
+import api from "../axiosapi";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
-  const [loading, setLoading] = useState(false); // Loading state
-  const [errorMessage, setErrorMessage] = useState(""); // Error message state
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
@@ -17,7 +18,10 @@ const LoginPage = () => {
     setErrorMessage("");
 
     try {
-      const response = await axios.post("/api/auth/login", { email, password });
+      const response = await api.post("auth/login", {
+        email,
+        password,
+      });
 
       localStorage.setItem("token", response.data.token); // Store token
       navigate("/account");
