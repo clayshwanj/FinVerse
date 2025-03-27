@@ -3,21 +3,24 @@ import Transaction from "../database/models/transaction.js";
 // Add new transaction
 export const addTransaction = async (req, res) => {
   try {
-    const { category, amount } = req.body;
+    const { category, amount, type } = req.body;
 
-    if (!category || !amount) {
+    if (!category || !amount || !type) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
     const newTransaction = new Transaction({
+      userId: req.user.id,
       category,
       amount,
+      type,
+      date: Date.now(),
     });
 
     await newTransaction.save();
     res.status(201).json(newTransaction);
   } catch (error) {
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
@@ -29,7 +32,7 @@ export const getTransactions = async (req, res) => {
     });
     res.json(transactions);
   } catch (error) {
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
@@ -58,11 +61,10 @@ export const getSummary = async (req, res) => {
   try {
     const { startDate, endDate, limits = {} } = req.query;
 
-    // Date filter setup (defaults to full history)
+    // Date filter setup (supports partial dates)
     const filter = { userId: req.user.id };
-    if (startDate && endDate) {
-      filter.date = { $gte: new Date(startDate), $lte: new Date(endDate) };
-    }
+    if (startDate) filter.date = { $gte: new Date(startDate) };
+    if (endDate) filter.date = { ...filter.date, $lte: new Date(endDate) };
 
     const transactions = await Transaction.find(filter);
 
@@ -111,6 +113,6 @@ export const getSummary = async (req, res) => {
     res.json(summary);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };

@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
-
+import api from "../axiosapi";
 const BudgetCategories = ({ onComplete }) => {
   const [step, setStep] = useState(1);
   const [selectedCategory, setSelectedCategory] = useState("");
@@ -11,6 +10,8 @@ const BudgetCategories = ({ onComplete }) => {
     "Food",
     "Rent",
     "Entertainment",
+    "Utilities",
+    "Savings",
     "+",
   ]);
   const [loading, setLoading] = useState(false);
@@ -32,7 +33,7 @@ const BudgetCategories = ({ onComplete }) => {
     e.preventDefault();
     if (newCategory.trim()) {
       try {
-        const response = await axios.post("/budget/add", {
+        const response = await api.post("/budget/add", {
           category: newCategory,
         });
         setCategories([...categories.slice(0, -1), newCategory, "+"]);
@@ -69,7 +70,7 @@ const BudgetCategories = ({ onComplete }) => {
     try {
       setLoading(true);
       setErrorMessage("");
-      const response = await axios.post("/budget/add", budgetData, {
+      const response = await api.post("/budget/add", budgetData, {
         withCredentials: true,
       });
 

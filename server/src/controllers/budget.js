@@ -4,6 +4,11 @@ const budgetController = {
   addBudget: async (req, res) => {
     try {
       const { category, amount, period } = req.body;
+
+      if (!category || !amount || !period) {
+        return res.status(400).json({ message: "All fields are required" });
+      }
+
       const newBudget = new Budget({
         userId: req.user.id,
         category,
@@ -13,7 +18,7 @@ const budgetController = {
       await newBudget.save();
       res.status(201).json(newBudget);
     } catch (error) {
-      res.status(500).json({ message: "Server error" });
+      res.status(500).json({ message: "Server error", error: error.message });
     }
   },
 

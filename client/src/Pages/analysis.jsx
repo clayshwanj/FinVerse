@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import Navbar from "../components/navbar";
 import PieChart from "../components/piechart";
 import BudgetSummary from "../components/budgetSum";
+import api from "../axiosapi";
 
 const Analysis = () => {
   const [transactions, setTransactions] = useState([]);
@@ -41,12 +41,8 @@ const Analysis = () => {
         ? `?startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}`
         : "";
 
-      const transactionResponse = await axios.get(
-        `http://localhost:3005/transactions${queryParams}`
-      );
-      const summaryResponse = await axios.get(
-        `http://localhost:3005/summary${queryParams}`
-      );
+      const transactionResponse = await api.get(`transactions${queryParams}`);
+      const summaryResponse = await api.get(`summary${queryParams}`);
 
       console.log("Fetched Transactions:", transactionResponse.data);
       console.log("Fetched Summary:", summaryResponse.data);

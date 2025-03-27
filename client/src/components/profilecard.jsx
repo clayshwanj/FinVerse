@@ -1,14 +1,52 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import api from "../axiosapi";
 
 const UserProfile = () => {
   const [profilePic, setProfilePic] = useState(null);
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
+  // Fetch user data from backend
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) return navigate("/loginpage");
+
+        const { data } = await api.get("auth/account", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setUser(data.user);
+      } catch (err) {
+        console.error("Failed to fetch user data", err);
+        setError("Failed to load user data");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUser();
+  }, [navigate]);
+
+  // Handle profile picture upload
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
     if (file) {
       setProfilePic(URL.createObjectURL(file));
     }
   };
+
+  // Logout function
+  const handleLogout = () => {
+    localStorage.clear();
+    navigate("/loginpage");
+  };
+
+  if (loading) return <h1>Loading...</h1>;
+  if (error) return <h1 className="text-red-500">{error}</h1>;
 
   return (
     <div className="flex flex-col items-center justify-center mt-16 px-6">
@@ -42,100 +80,86 @@ const UserProfile = () => {
           />
         </div>
 
-        <p>
-          <strong>Name:</strong> Jane Doe
-        </p>
-        <p>
-          <strong>Email:</strong> janedoe@gmail.com
-        </p>
+        {/* User Info */}
+        <h1>Welcome, {user?.name}!</h1>
+        <p>Email: {user?.email}</p>
+
+        <button
+          onClick={handleLogout}
+          className="mt-4 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
+        >
+          Logout
+        </button>
       </div>
+      <div className="max-w-6xl mx-auto">
+        {/* Section Title */}
+        <h2 className="text-3xl font-bold text-center text-black mb-8">
+          Account Types
+        </h2>
 
-      {/* Total Balance Section */}
-      <div className="w-96 border rounded-2xl bg-white px-7 py-5 shadow-md mt-6">
-        <h3 className="text-xl font-semibold text-center text-green-700">
-          Total Balance
-        </h3>
-        <p className="text-center text-gray-700 text-lg font-medium mt-2">
-          Ksh 5,000
-        </p>
-      </div>
+        {/* Product Cards Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          {/* Home Account */}
+          <article className="bg-white rounded-lg shadow-md overflow-hidden transform transition duration-300 hover:scale-105">
+            <img
+              src="/img/Home.jpg"
+              alt="Home Account"
+              className="w-full h-40 object-cover"
+            />
+            <div className="p-6">
+              <h3 className="text-xl font-semibold text-sky-700">Home</h3>
+              <p className="text-gray-600 mt-2">
+                A personal account designed for everyday budgeting and savings.
+              </p>
+            </div>
+          </article>
 
-      {/* Account Types Section */}
-      <section
-        id="products"
-        className="py-16 bg-gray-100 px-6 md:px-16 w-full mt-8"
-      >
-        <div className="max-w-6xl mx-auto">
-          {/* Section Title */}
-          <h2 className="text-3xl font-bold text-center text-black mb-8">
-            Account Types
-          </h2>
+          {/* Office Account */}
+          <article className="bg-white rounded-lg shadow-md overflow-hidden transform transition duration-300 hover:scale-105">
+            <img
+              src="/img/office.jpg"
+              alt="Office Account"
+              className="w-full h-40 object-cover"
+            />
+            <div className="p-6">
+              <h3 className="text-xl font-semibold text-sky-700">Office</h3>
+              <p className="text-gray-600 mt-2">
+                Manage office expenses and track budgets with ease.
+              </p>
+            </div>
+          </article>
 
-          {/* Product Cards Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {/* Home Account */}
-            <article className="bg-white rounded-lg shadow-md overflow-hidden transform transition duration-300 hover:scale-105">
-              <img
-                src="/img/Home.jpg"
-                alt="Home Account"
-                className="w-full h-40 object-cover"
-              />
-              <div className="p-6">
-                <h3 className="text-xl font-semibold text-sky-700">Home</h3>
-                <p className="text-gray-600 mt-2">
-                  A personal account designed for everyday budgeting and
-                  savings.
-                </p>
-              </div>
-            </article>
+          {/* Personal Account */}
+          <article className="bg-white rounded-lg shadow-md overflow-hidden transform transition duration-300 hover:scale-105">
+            <img
+              src="\img\pexels-karolina-grabowska-4475523.jpg"
+              alt="Personal Account"
+              className="w-full h-40 object-cover"
+            />
+            <div className="p-6">
+              <h3 className="text-xl font-semibold text-sky-700">Personal</h3>
+              <p className="text-gray-600 mt-2">
+                Your own financial management tool for personal use.
+              </p>
+            </div>
+          </article>
 
-            {/* Office Account */}
-            <article className="bg-white rounded-lg shadow-md overflow-hidden transform transition duration-300 hover:scale-105">
-              <img
-                src="/img/office.jpg"
-                alt="Office Account"
-                className="w-full h-40 object-cover"
-              />
-              <div className="p-6">
-                <h3 className="text-xl font-semibold text-sky-700">Office</h3>
-                <p className="text-gray-600 mt-2">
-                  Manage office expenses and track budgets with ease.
-                </p>
-              </div>
-            </article>
-
-            {/* Personal Account */}
-            <article className="bg-white rounded-lg shadow-md overflow-hidden transform transition duration-300 hover:scale-105">
-              <img
-                src="\img\pexels-karolina-grabowska-4475523.jpg"
-                alt="Personal Account"
-                className="w-full h-40 object-cover"
-              />
-              <div className="p-6">
-                <h3 className="text-xl font-semibold text-sky-700">Personal</h3>
-                <p className="text-gray-600 mt-2">
-                  Your own financial management tool for personal use.
-                </p>
-              </div>
-            </article>
-
-            {/* Business Account */}
-            <article className="bg-white rounded-lg shadow-md overflow-hidden transform transition duration-300 hover:scale-105">
-              <img
-                src="\img\pexels-anntarazevich-14751274.jpg"
-                alt="Business Account"
-                className="w-full h-40 object-cover"
-              />
-              <div className="p-6">
-                <h3 className="text-xl font-semibold text-sky-700">Business</h3>
-                <p className="text-gray-600 mt-2">
-                  A specialized account for small businesses and freelancers.
-                </p>
-              </div>
-            </article>
-          </div>
+          {/* Business Account */}
+          <article className="bg-white rounded-lg shadow-md overflow-hidden transform transition duration-300 hover:scale-105">
+            <img
+              src="\img\pexels-anntarazevich-14751274.jpg"
+              alt="Business Account"
+              className="w-full h-40 object-cover"
+            />
+            <div className="p-6">
+              <h3 className="text-xl font-semibold text-sky-700">Business</h3>
+              <p className="text-gray-600 mt-2">
+                A specialized account for small businesses and freelancers.
+              </p>
+            </div>
+          </article>
         </div>
-      </section>
+      </div>
     </div>
   );
 };

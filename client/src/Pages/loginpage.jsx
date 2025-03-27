@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa"; // Import icons
-import axios from "axios";
 import api from "../axiosapi";
 
 const LoginPage = () => {

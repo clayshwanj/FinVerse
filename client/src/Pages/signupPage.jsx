@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
-import axios from "axios";
+import api from "../axiosapi";
 
 const SignupPage = () => {
   const [name, setName] = useState("");
@@ -20,7 +20,7 @@ const SignupPage = () => {
     setSuccessMessage("");
 
     try {
-      const response = await axios.post("http://localhost:3005/auth/signup", {
+      const response = await api.post("auth/signup", {
         name,
         email,
         password,

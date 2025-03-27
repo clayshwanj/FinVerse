@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../axiosapi";
 
 const BudgetSummary = () => {
   const [totalIncome, setTotalIncome] = useState(0);
@@ -12,7 +12,7 @@ const BudgetSummary = () => {
   useEffect(() => {
     const fetchSummary = async () => {
       try {
-        const response = await axios.get("/budget/summary");
+        const response = await api.get("/budget/summary");
         const data = response.data;
 
         setTotalIncome(data.totalIncome);

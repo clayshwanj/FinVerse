@@ -3,6 +3,7 @@ import api from "../axiosapi";
 
 const Transaction = () => {
   const [transactions, setTransactions] = useState([]); // Ensure transactions is an array
+  const [summary, setSummary] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [amount, setAmount] = useState("");
   const [category, setCategory] = useState("");
@@ -11,20 +12,14 @@ const Transaction = () => {
   // Fetch Transactions from Backend
   useEffect(() => {
     const fetchTransactions = async () => {
+      setLoading(true);
       try {
-        const response = await api.get("transactions", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-
-        if (Array.isArray(response.data)) {
-          setTransactions(response.data);
-        } else {
-          console.error("Unexpected response format:", response.data);
-          setTransactions([]);
-        }
+        const response = await api.get("transactions");
+        setTransactions(Array.isArray(response.data) ? response.data : []);
       } catch (error) {
         console.error("Error fetching transactions:", error);
-        setTransactions([]);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -35,13 +30,16 @@ const Transaction = () => {
         });
         setSummary(response.data);
       } catch (error) {
-        console.error("Error fetching summary:");
+        console.error(
+          "Error fetching summary:",
+          error.response?.data || error.message
+        );
       }
     };
 
     fetchTransactions();
     fetchSummary();
-  }, [token]);
+  }, []);
 
   // Handle Submit New Transaction
   const handleSubmit = async (e) => {
@@ -59,7 +57,10 @@ const Transaction = () => {
       setAmount("");
       setCategory("");
     } catch (error) {
-      console.error("Error adding transaction:");
+      console.error(
+        "Error adding transaction:",
+        error.response?.data || error.message
+      );
     }
   };
 
@@ -127,14 +128,24 @@ const Transaction = () => {
               required
               className="w-40 mr-4"
             />
-            <input
-              type="text"
-              placeholder="Category (Food, Rent, etc.)"
+
+            <select
               value={category}
               onChange={(e) => setCategory(e.target.value)}
               required
-              className="mr-5"
-            />
+              className="mr-5 p-2 border rounded"
+            >
+              <option value="" disabled>
+                Select Category
+              </option>
+              <option value="Food">Food</option>
+              <option value="Rent">Rent</option>
+              <option value="Transport">Transport</option>
+              <option value="Entertainment">Entertainment</option>
+              <option value="Utilities">Utilities</option>
+              <option value="Savings">Savings</option>
+              <option value="Other">Other</option>
+            </select>
 
             <button
               type="submit"
