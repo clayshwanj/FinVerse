@@ -43,7 +43,7 @@ const Navbar = () => {
             Account
           </Link>
           <Link className="text-black" to="/dashboard">
-            Setup Budget
+            Dashboard
           </Link>
           <Link className="text-black" to="/analysis">
             Analysis
