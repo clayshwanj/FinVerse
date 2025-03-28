@@ -132,6 +132,16 @@ const Transaction = () => {
             />
 
             <select
+              value={type}
+              onChange={(e) => setType(e.target.value)}
+              required
+              className="mr-5 p-2 border rounded"
+            >
+              <option value="expense">Expense</option>
+              <option value="income">Income</option>
+            </select>
+
+            <select
               value={category}
               onChange={(e) => setCategory(e.target.value)}
               required
@@ -140,23 +150,22 @@ const Transaction = () => {
               <option value="" disabled>
                 Select Category
               </option>
-              <option value="Food">Food</option>
-              <option value="Rent">Rent</option>
-              <option value="Transport">Transport</option>
-              <option value="Entertainment">Entertainment</option>
-              <option value="Utilities">Utilities</option>
-              <option value="Savings">Savings</option>
-              <option value="Other">Other</option>
-            </select>
-
-            <select
-              value={type}
-              onChange={(e) => setType(e.target.value)}
-              required
-              className="mr-5 p-2 border rounded"
-            >
-              <option value="expense">Expense</option>
-              <option value="income">Income</option>
+              {type === "expense" ? (
+                <>
+                  <option value="Food">Food</option>
+                  <option value="Rent">Rent</option>
+                  <option value="Transport">Transport</option>
+                  <option value="Entertainment">Entertainment</option>
+                  <option value="Utilities">Utilities</option>
+                  <option value="Savings">Savings</option>
+                  <option value="Other">Other</option>
+                </>
+              ) : (
+                <>
+                  <option value="Salary">Salary</option>
+                  <option value="Investment">Investment</option>
+                </>
+              )}
             </select>
 
             <button
