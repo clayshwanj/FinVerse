@@ -10,9 +10,7 @@ const VerifyPage = () => {
   useEffect(() => {
     const verifyEmail = async () => {
       try {
-        const response = await api.get(
-          `http://localhost:3005/auth/verify/${token}`
-        );
+        const response = await api.get(`auth/verify/${token}`);
         setMessage(response.data.message);
         setTimeout(() => navigate("/loginpage"), 3000);
       } catch (error) {
