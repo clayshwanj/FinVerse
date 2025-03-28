@@ -3,17 +3,8 @@ import { useNavigate } from "react-router-dom";
 
 // Setup Axios instance
 const api = axios.create({
-  baseURL: "http://localhost:3005/",
+  baseURL: import.meta.env.VITE_API_URL, // Base URL from environment variable
   withCredentials: true, // Ensures cookies (JWT token) are sent with requests
-});
-
-// Automatically attach token to headers
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token");
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
 });
 
 // Handle expired tokens and refresh logic
