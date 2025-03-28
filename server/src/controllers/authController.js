@@ -125,7 +125,15 @@ export const loginUser = async (req, res) => {
 
     res.cookie("token", accessToken, COOKIE_OPTIONS);
     res.cookie("refreshToken", refreshToken, COOKIE_OPTIONS);
-    res.json({ message: "Logged in successfully!" });
+
+    // Remove unnecessary fields from the user
+    const { password: _, ...userData } = user.toObject();
+
+    res.json({
+      message: "Logged in successfully!",
+      user: userData,
+      token: accessToken,
+    });
   } catch (error) {
     console.log(error);
 

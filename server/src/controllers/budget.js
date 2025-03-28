@@ -13,11 +13,13 @@ const budgetController = {
         userId: req.user.id,
         category,
         amount,
-        period,
+        period: period.toLowerCase(),
       });
       await newBudget.save();
       res.status(201).json(newBudget);
     } catch (error) {
+      console.log({ error });
+
       res.status(500).json({ message: "Server error", error: error.message });
     }
   },

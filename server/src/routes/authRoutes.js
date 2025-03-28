@@ -7,6 +7,7 @@ import {
   verifyEmail,
 } from "../controllers/authController.js";
 import { authMiddleware } from "../middleware/authMiddleware.js";
+import User from "../database/models/user.js";
 
 const router = express.Router();
 
@@ -17,10 +18,10 @@ router.get("/refresh", refreshToken);
 router.get("/verify/:token", verifyEmail);
 
 // Protect this route
-router.get("/account", authMiddleware, (req, res) => {
-  console.log(req.user.id);
+router.get("/account", authMiddleware, async (req, res) => {
+  const user = await User.findById(req.user.id).select("-password");
 
-  res.json({ message: "Welcome to you Finverse!" });
+  res.json(user);
 });
 
 export default router;
