@@ -16,21 +16,18 @@ const App = () => {
     <Router>
       <Routes>
         <Route path="/" element={<HomePage />} />
-        <Route
-          path="/account"
-          element={
-            <ProtectedRoute>
-              <Account />
-            </ProtectedRoute>
-          }
-        />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/analysis" element={<Analysis />} />
         <Route path="/loginpage" element={<LoginPage />} />
         <Route path="/signupPage" element={<SignupPage />} />
         <Route path="/auth/verify/:token" element={<VerifyPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
+
+        <Route element={<ProtectedRoute />}>
+          {/* Protected Routes */}
+          <Route path="/account" element={<Account />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/analysis" element={<Analysis />} />
+        </Route>
       </Routes>
     </Router>
   );

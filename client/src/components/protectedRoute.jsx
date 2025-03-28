@@ -1,8 +1,8 @@
 import React from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 import api from "../axiosapi";
 
-const ProtectedRoute = ({ children }) => {
+const ProtectedRoute = () => {
   const [isAuthenticated, setIsAuthenticated] = React.useState(null);
 
   React.useEffect(() => {
@@ -13,6 +13,7 @@ const ProtectedRoute = ({ children }) => {
 
         if (res.status === 200) setIsAuthenticated(true);
       } catch (error) {
+        console.error("Authentication check failed:", error);
         setIsAuthenticated(false);
       }
     };
@@ -21,7 +22,9 @@ const ProtectedRoute = ({ children }) => {
 
   if (isAuthenticated === null) return <div>Loading...</div>;
 
-  return isAuthenticated ? children : <Navigate to="/loginpage" />;
+  if (!isAuthenticated) return <Navigate to="/loginpage" />;
+
+  return <Outlet />; // Render the child routes if authenticated
 };
 
 export default ProtectedRoute;

@@ -13,12 +13,7 @@ const UserProfile = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const token = localStorage.getItem("token");
-        if (!token) return navigate("/loginpage");
-
-        const { data } = await api.get("auth/account", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const { data } = await api.get("auth/account");
 
         setUser(data);
       } catch (err) {
@@ -41,9 +36,13 @@ const UserProfile = () => {
   };
 
   // Logout function
-  const handleLogout = () => {
-    localStorage.clear();
-    navigate("/loginpage");
+  const handleLogout = async () => {
+    const response = await api.post("auth/logout");
+
+    if (response.status === 200) {
+      localStorage.clear();
+      navigate("/loginpage?logout=true");
+    }
   };
 
   if (loading) return <h1>Loading...</h1>;

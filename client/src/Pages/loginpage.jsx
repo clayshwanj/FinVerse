@@ -1,15 +1,28 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa"; // Import icons
 import api from "../axiosapi";
 
 const LoginPage = () => {
+  // Get logout value from URL parameters
+  const urlParams = new URLSearchParams(window.location.search);
+  const logout = urlParams.get("logout");
+  const [showLogoutMessage, setShowLogoutMessage] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (logout) {
+      setShowLogoutMessage(true);
+      setTimeout(() => {
+        setShowLogoutMessage(false);
+      }, 5000); // Hide message after 3 seconds
+    }
+  }, [logout]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -21,8 +34,6 @@ const LoginPage = () => {
         email,
         password,
       });
-
-      console.log({ response });
 
       navigate("/account");
     } catch (error) {
@@ -37,11 +48,18 @@ const LoginPage = () => {
 
   return (
     <div className="flex items-center justify-center mt-28">
-      <div className="w-96 border rounded-2xl bg-white px-7 py-10">
+      <div className="w-96 border rounded-2xl bg-white px-7 py-10 space-y-3">
         <h1 className="text-2xl font-bold">Login</h1>
 
         {/* Error Message */}
         {errorMessage && <p className="text-red-500 text-sm">{errorMessage}</p>}
+
+        {/* Logout Message */}
+        {showLogoutMessage && (
+          <p className="text-green-500 text-sm">
+            Successfully logged out. Please log in again.
+          </p>
+        )}
 
         <form onSubmit={handleLogin} className="space-y-4">
           <input
