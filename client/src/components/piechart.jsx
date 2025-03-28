@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Pie } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import api from "../axiosapi";
 
 // Register Chart.js components
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -13,12 +14,11 @@ const PieChart = ({ period }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(
-          `http://localhost:3005/transactions/summary?period=${period}`
-        );
-        if (!response.ok) throw new Error("Failed to fetch data");
+        const response = await api.get("transactions/summary", {
+          params: { period },
+        });
 
-        const data = await response.json();
+        const data = response.data;
         const categories = Object.keys(data.categoryBreakdown);
         const amounts = Object.values(data.categoryBreakdown);
 

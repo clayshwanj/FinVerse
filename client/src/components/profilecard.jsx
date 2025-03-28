@@ -19,7 +19,8 @@ const UserProfile = () => {
         const { data } = await api.get("auth/account", {
           headers: { Authorization: `Bearer ${token}` },
         });
-        setUser(data.user);
+
+        setUser(data);
       } catch (err) {
         console.error("Failed to fetch user data", err);
         setError("Failed to load user data");

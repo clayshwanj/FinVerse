@@ -42,7 +42,9 @@ const Analysis = () => {
         : "";
 
       const transactionResponse = await api.get(`transactions${queryParams}`);
-      const summaryResponse = await api.get(`summary${queryParams}`);
+      const summaryResponse = await api.get(
+        `transactions/summary${queryParams}`
+      );
 
       console.log("Fetched Transactions:", transactionResponse.data);
       console.log("Fetched Summary:", summaryResponse.data);

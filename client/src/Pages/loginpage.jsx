@@ -22,7 +22,8 @@ const LoginPage = () => {
         password,
       });
 
-      localStorage.setItem("token", response.data.token); // Store token
+      console.log({ response });
+
       navigate("/account");
     } catch (error) {
       console.error("Login error:", error);

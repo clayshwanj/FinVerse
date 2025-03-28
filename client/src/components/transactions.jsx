@@ -7,6 +7,8 @@ const Transaction = () => {
   const [showForm, setShowForm] = useState(false);
   const [amount, setAmount] = useState("");
   const [category, setCategory] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [type, setType] = useState("expense"); // Default type to income
   const token = localStorage.getItem("token");
 
   // Fetch Transactions from Backend
@@ -45,7 +47,7 @@ const Transaction = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const newTransaction = { category, amount };
+    const newTransaction = { category, amount, type };
 
     try {
       const response = await api.post("transactions/add", newTransaction, {
@@ -145,6 +147,16 @@ const Transaction = () => {
               <option value="Utilities">Utilities</option>
               <option value="Savings">Savings</option>
               <option value="Other">Other</option>
+            </select>
+
+            <select
+              value={type}
+              onChange={(e) => setType(e.target.value)}
+              required
+              className="mr-5 p-2 border rounded"
+            >
+              <option value="expense">Expense</option>
+              <option value="income">Income</option>
             </select>
 
             <button
